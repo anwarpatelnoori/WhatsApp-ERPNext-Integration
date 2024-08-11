@@ -16,17 +16,17 @@ def send_daily_whatsappmessage():
     if today <= formated_end_date:
         day_remainig = frappe.utils.date_diff(formated_end_date, today)
         if current_hour== 0 and current_minute == 0:
-            joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1},fieldname='joke')
-            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1},fieldname='name')
+            joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
+            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
             if joke:
                 message = f"""Hi, Mohammed Zulfekhar Ahmed, I know you are counting the days on your fingertips, don't waste your time on that😂😂😂. So {day_remainig} days to go from now.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
                 send_whatsapp_without_pdf(message)
                 frappe.db.set_value('Joke',joke_name,'avail',0)
         elif current_hour == 12 and current_minute == 0:
-            joke = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1},fieldname='joke')
-            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1},fieldname='name')
+            joke = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='joke')
+            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='name')
             if joke:
-                message = f"""Hi, Mohammed Zulfekhar Ahmed, I know you are counting the days on your fingertips, don't waste your time on that😂😂😂. So {day_remainig} days to go from now.\n\nSmile for this😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
+                message = f"""Hi, Mohammed Zulfekhar Ahmed, I know you are counting the days on your fingertips, don't waste your time on that😂😂😂. So {day_remainig} days to go from now.\n\nSmile for this😜\n\n{joke}\n\n An automated messages til {end_date}🤓🤓"""
                 send_whatsapp_without_pdf(message)
                 frappe.db.set_value('Joke',joke_name,'avail',0)
     else:
@@ -38,7 +38,7 @@ def send_whatsapp_without_pdf(message):
     token = frappe.get_doc('whatsapp message').get('token')
     message_url =  frappe.get_doc('whatsapp message').get('message_url')
     msg1 = message
-    group_id = '120363324012320022@g.us'
+    group_id = '919901277345-1429602479@g.us'
     payload = {
         'token': token,
         'to':group_id,
