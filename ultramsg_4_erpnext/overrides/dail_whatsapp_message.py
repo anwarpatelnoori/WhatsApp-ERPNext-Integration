@@ -12,21 +12,30 @@ def send_daily_whatsappmessage():
     formated_end_date = datetime.strptime(end_date, '%d/%m/%Y').date()  
     today = datetime.now().date()
     current_hour = datetime.now().hour
-    current_minute = datetime.now().minute
+
+    current_datetime = datetime.now().replace(microsecond=0)
+    nikah_datetime =   datetime.strptime('22/08/2024 12:00 PM', '%d/%m/%Y %I:%M %p')
+    diff = nikah_datetime - current_datetime
+    days = diff.days
+    total_seconds = diff.seconds
+    hours = total_seconds // 3600
+    minutes = (total_seconds % 3600) // 60
+    seconds = total_seconds % 60
+    wait = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds" 
     if today <= formated_end_date:
-        day_remainig = frappe.utils.date_diff(formated_end_date, today)
         if current_hour== 0:
             joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
             joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
             if joke:
-                message = f"""Hi, Mohammed Zulfekhar Ahmed, I know you are counting the days on your fingertips, don't waste your time on that😂😂😂. So {day_remainig} days to go from now.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
+                message = f"""Congratulations! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed 1 day is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
                 send_whatsapp_without_pdf(message)
                 frappe.db.set_value('Joke',joke_name,'avail',0)
         elif current_hour == 12:
             joke = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='joke')
             joke_name = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='name')
             if joke:
-                message = f"""Hi, Mohammed Zulfekhar Ahmed, I know you are counting the days on your fingertips, don't waste your time on that😂😂😂. So {day_remainig} days to go from now.\n\nSmile for this😜\n\n{joke}\n\n An automated messages til {end_date}🤓🤓"""
+                message = f"""Boooom Baaaam! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed, another 12hr is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
+
                 send_whatsapp_without_pdf(message)
                 frappe.db.set_value('Joke',joke_name,'avail',0)
     else:
