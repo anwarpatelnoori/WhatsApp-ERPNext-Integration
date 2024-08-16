@@ -23,8 +23,11 @@ def send_daily_whatsappmessage():
     seconds = total_seconds % 60
     wait = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds" 
     if today <= formated_end_date:
-        joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
-        joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
+        # joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
+        # joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
+        
+        joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1},fieldname='joke')
+        joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1},fieldname='name')
         if joke:
             message = f"""Congratulations! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed 1 day is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
             send_whatsapp_without_pdf(message)
