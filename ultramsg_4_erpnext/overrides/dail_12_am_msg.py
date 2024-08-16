@@ -23,21 +23,17 @@ def send_daily_whatsappmessage():
     seconds = total_seconds % 60
     wait = f"{days} days, {hours} hours, {minutes} minutes, {seconds} seconds" 
     if today <= formated_end_date:
-        if current_hour== 0:
-            joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
-            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
-            if joke:
-                message = f"""Congratulations! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed 1 day is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
-                send_whatsapp_without_pdf(message)
-                frappe.db.set_value('Joke',joke_name,'avail',0)
-        elif current_hour == 12:
-            joke = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='joke')
-            joke_name = frappe.db.get_value('Joke',filters={'am_pm':'PM','avail':1,'date':today},fieldname='name')
-            if joke:
-                message = f"""Boooom Baaaam! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed, another 12hr is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
-
-                send_whatsapp_without_pdf(message)
-                frappe.db.set_value('Joke',joke_name,'avail',0)
+        joke = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='joke')
+        joke_name = frappe.db.get_value('Joke',filters={'am_pm':'AM','avail':1,'date':today},fieldname='name')
+        if joke:
+            message = f"""Congratulations! 👏🏿👏🏿👏🏿, Mohammed Zulfekhar Ahmed 1 day is reduced 🥁🎷🎺🎹,.\n\n So {wait} remaining from now ⏳⌛.\n\nHave a Smile for a while😜\n\n{joke}\n\n An automated message til {end_date}🤓🤓"""
+            send_whatsapp_without_pdf(message)
+            frappe.db.set_value('Joke',joke_name,'avail',0)
+        else:
+            new_note = frappe.new_doc('Note')
+            new_note.title = joke_name
+            new_note.content = joke
+            new_note.save()
     else:
         frappe.db.set_value('Server Script','Daily WhatsApp Message','disabled',1)
         frappe.db.commit
@@ -47,7 +43,7 @@ def send_whatsapp_without_pdf(message):
     token = frappe.get_doc('whatsapp message').get('token')
     message_url =  frappe.get_doc('whatsapp message').get('message_url')
     msg1 = message
-    group_id = '919901277345-1429602479@g.us'
+    group_id = '120363324012320022@g.us'
     payload = {
         'token': token,
         'to':group_id,
@@ -59,4 +55,9 @@ def send_whatsapp_without_pdf(message):
         response = requests.post(message_url, data=payload, headers=headers)
         return response.text
     except Exception as e:
+        current_hour = datetime.now().hour
+        new_note = frappe.new_doc('Note')
+        new_note.title = current_hour
+        new_note.content = f"Failed to send message at this hour: {current_hour}"
+        new_note.save()
         frappe.log_error(title='Failed to send notification', message=frappe.get_traceback())  
